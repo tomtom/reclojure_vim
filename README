@@ -1,4 +1,17 @@
+Features:
+
+    - Evaluate code via |rescreen.txt|
+    - 'omnifunc'/'completefunc' completion
+    - Use K to get documentation on an identifier
+    - Use <LocalLeader>K to lookup documentation in the internet
+
+
+-----------------------------------------------------------------------
+
 Status:  Experimental
+Dependencies:
+  rescreen :: http://github.com/tomtom/rescreen_vim
+      > git clone git://github.com/tomtom/rescreen_vim.git
 Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
 See http://github.com/tomtom for related plugins.
 

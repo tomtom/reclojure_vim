@@ -4,6 +4,8 @@
     "author" : "Tom Link <micathom at gmail com>",
     "maintainer" : "Tom Link <micathom at gmail com>",
     "repository" : {"type": "git", "url": "git://github.com/tomtom/reclojure_vim.git"},
-    "dependencies" : {},
+    "dependencies" : {
+    "rescreen": {"type": "git", "url": "git://github.com/tomtom/rescreen_vim.git"}
+  },
     "description" : ""
 }
