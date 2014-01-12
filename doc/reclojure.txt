@@ -1,0 +1,95 @@
+*reclojure.txt*  Interact with clojure via the rescreen vim plugin
+                Author: Thomas Link, micathom AT gmail com?subject=vim
+
+Features:
+
+    - Evaluate code via |rescreen.txt|
+    - 'omnifunc'/'completefunc' completion
+    - Use K to get documentation on an identifier
+    - Use <LocalLeader>K to lookup documentation in the internet
+
+
+-----------------------------------------------------------------------
+Install~
+
+Edit the vba file and type: >
+
+    :so %
+
+See :help vimball for details. If you have difficulties or use vim 7.0, 
+please make sure, you have the current version of vimball (vimscript 
+#1502) installed or update your runtime.
+
+This plugin requires the rescreen vim plugin to be installed 
+(https://github.com/tomtom/rescreen_vim).
+
+
+========================================================================
+Contents~
+
+        :Reclojure ........................... |:Reclojure|
+        g:reclojure#lookup_url ............... |g:reclojure#lookup_url|
+        reclojure#Complete ................... |reclojure#Complete()|
+        reclojure#Keyword .................... |reclojure#Keyword()|
+        reclojure#Lookup ..................... |reclojure#Lookup()|
+        prototype.ExitRepl
+        prototype.WrapResultWriter
+        rescreen#repl#clojure#Extend ......... |rescreen#repl#clojure#Extend()|
+        n_K .................................. |n_K|
+        n_<localleader>K ..................... |n_<localleader>K|
+
+
+========================================================================
+plugin/reclojure.vim~
+
+                                                    *:Reclojure*
+:Reclojure
+    Initiate an clojure |rescreen| session for the current buffer and 
+    setup some custom maps.
+
+
+========================================================================
+autoload/reclojure.vim~
+
+                                                    *g:reclojure#lookup_url*
+g:reclojure#lookup_url         (default: 'http://clojuredocs.org/search?q=%s')
+
+                                                    *reclojure#Complete()*
+reclojure#Complete(findstart, base)
+
+                                                    *reclojure#Keyword()*
+reclojure#Keyword(...)
+
+                                                    *reclojure#Lookup()*
+reclojure#Lookup(...)
+
+
+========================================================================
+autoload/rescreen/repl/clojure.vim~
+
+prototype.ExitRepl
+
+prototype.WrapResultWriter
+
+                                                    *rescreen#repl#clojure#Extend()*
+rescreen#repl#clojure#Extend(dict)
+    Set the repl to "lein repl" if the current buffer seems to be part of 
+    a lein project, i.e. if there is a project.clj around. Otherwise 
+    clojure is used.
+
+    The working directory has to be set properly -- either by means of 
+    'autochdir' or by |:chdir|.
+
+
+========================================================================
+ftplugin/clojure/reclojure.vim~
+
+                                                    *n_K*
+n_K ... :call reclojure#Keyword()<cr>
+
+                                                    *n_<localleader>K*
+n_<localleader>K ... :call reclojure#Lookup()<cr>
+
+
+
+vim:tw=78:fo=tcq2:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
