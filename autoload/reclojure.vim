@@ -29,23 +29,19 @@ if !exists('g:reclojure#lookup_url')
 endif
 
 
-function! reclojure#Complete(findstart, base) "{{{3
-    if a:findstart
-        let line = getline('.')
-        let start = col('.') - 1
-        while start > 0 && line[start - 1] =~ '[._[:alnum:]]'
-            let start -= 1
-        endwhile
-        return start
-    else
-        let rescreen = rescreen#Init(1, {'repltype': 'clojure'})
-        let r = printf('(clojure.string/join " " (apropos "%s"))', escape(a:base, '"\'))
-        let completions = rescreen.EvaluateInSession(r, 'r')
-        " TLogVAR completions
-        let clist = split(completions, ' \+')
-        " TLogVAR clist
-        return clist
-    endif
+if !exists('g:reclojure#convert_path')
+    let g:reclojure#convert_path = ''   "{{{2
+endif
+
+
+function! reclojure#Completions(base) "{{{3
+    let rescreen = rescreen#Init(1, {'repltype': 'clojure'})
+    let r = printf('(clojure.string/join " " (apropos #"^%s"))', escape(a:base, '"\'))
+    let completions = rescreen.EvaluateInSession(r, 'r')
+    " TLogVAR completions
+    let clist = split(completions, ' \+')
+    " TLogVAR clist
+    return clist
 endf
 
 

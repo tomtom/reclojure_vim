@@ -10,10 +10,12 @@ let b:did_reclojure = 1
 
 Rescreen clojure
 
+
+let b:rescreen_completions='reclojure#Completions'
 if empty(&omnifunc)
-    setlocal omnifunc=reclojure#Complete
+    setlocal omnifunc=rescreen#Complete
 elseif empty(&completefunc) || &omnifunc == &completefunc
-    setlocal completefunc=reclojure#Complete
+    setlocal completefunc=rescreen#Complete
 endif
 
 nnoremap <buffer> K :call reclojure#Keyword()<cr>
