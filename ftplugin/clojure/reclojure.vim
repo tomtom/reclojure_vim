@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    9
+" @Revision:    11
 
 if exists("b:did_reclojure")
     finish
@@ -8,7 +8,7 @@ endif
 let b:did_reclojure = 1
 
 
-Rescreen clojure
+Rescreen -default clojure
 
 
 let b:rescreen_completions='reclojure#Completions'
@@ -17,6 +17,7 @@ if empty(&omnifunc)
 elseif empty(&completefunc) || &omnifunc == &completefunc
     setlocal completefunc=rescreen#Complete
 endif
+
 
 nnoremap <buffer> K :call reclojure#Keyword()<cr>
 nnoremap <buffer> <localleader>K :call reclojure#Lookup()<cr>
