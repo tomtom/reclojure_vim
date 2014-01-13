@@ -5,8 +5,10 @@
 
 
 if !exists('g:reclojure#lookup_cmd')
-    if executable("firefox")
-        let g:reclojure#lookup_cmd = "! firefox %s &"
+    if exists('g:netrw_browsex_viewer') && !empty(g:netrw_browsex_viewer)
+        let g:reclojure#lookup_cmd = "! ". g:netrw_browsex_viewer ." %s"
+    elseif exists('g:vikiOpenUrlWith_ANY') && !empty(g:vikiOpenUrlWith_ANY)
+        let g:reclojure#lookup_cmd = substitute(g:vikiOpenUrlWith_ANY, '%{URL}', '%s', '')
     elseif has("win32") || has("win64")
         " let g:reclojure#lookup_cmd = "! RunDll32.EXE URL.DLL,FileProtocolHandler %s"
         let g:reclojure#lookup_cmd = "! start %s"
