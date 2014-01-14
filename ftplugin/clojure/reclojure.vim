@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    12
+" @Revision:    20
 
 if exists("b:did_reclojure")
     finish
@@ -9,6 +9,12 @@ let b:did_reclojure = 1
 
 
 Rescreen -default clojure
+
+
+command -bar -buffer -nargs=* Leintest Rescreen! bash lein test <args> || read
+command -bar -buffer -nargs=* Leinretest Rescreen! bash lein retest <args> || read
+command -bar -buffer -nargs=* Leinrerun Rescreen! bash lein run <args> || read
+command -bar -buffer -nargs=* Leintyped Rescreen! bash lein typed check <args> || read
 
 
 let b:rescreen_completions='reclojure#Completions'
