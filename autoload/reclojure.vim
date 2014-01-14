@@ -1,7 +1,22 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    30
+" @Revision:    41
+
+
+if !exists('g:reclojure#clojure')
+    let g:reclojure#clojure = 'clojure'   "{{{2
+endif
+
+
+if !exists('g:reclojure#lein_repl')
+    let g:reclojure#lein_repl = 'lein repl'   "{{{2
+endif
+
+
+if !exists('g:reclojure#shell')
+    let g:reclojure#shell = g:rescreen#shell   "{{{2
+endif
 
 
 if !exists('g:reclojure#lookup_cmd')
@@ -47,9 +62,7 @@ endf
 
 function! reclojure#Keyword(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
-    let name = word
-    " let name = string(word)
-    let r = printf('(doc %s)', name)
+    let r = printf('(doc %s)', word)
     call rescreen#Send(r, 'clojure')
 endf
 

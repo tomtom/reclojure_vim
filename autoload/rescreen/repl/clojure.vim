@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    40
+" @Revision:    46
 
 
 let s:prototype = {} "{{{2
@@ -42,12 +42,16 @@ endf
 " The working directory has to be set properly -- either by means of 
 " 'autochdir' or by |:chdir|.
 function! rescreen#repl#clojure#Extend(dict) "{{{3
+    let a:dict.shell = g:reclojure#shell
+    let a:dict.repl_convert_path = g:reclojure#convert_path
     let a:dict.repl_handler = copy(s:prototype)
     let a:dict.repl_handler.lein_project = findfile('project.clj', '.;')
     " TLogVAR a:dict.lein_project
     if !empty(a:dict.repl_handler.lein_project)
         let a:dict.repldir = fnamemodify(a:dict.repl_handler.lein_project, ':p:h')
-        let a:dict.repl = 'lein repl'
+        let a:dict.repl = g:reclojure#lein_repl
+    else
+        let a:dict.repl = g:reclojure#clojure
     endif
 endf
 
