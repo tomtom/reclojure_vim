@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    45
+" @Revision:    51
 
 
 if !exists('g:reclojure#clojure')
@@ -75,6 +75,13 @@ endf
 function! reclojure#Keyword(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
     let r = printf('(doc %s)', word)
+    call rescreen#Send(r, 'clojure')
+endf
+
+
+function! reclojure#JavaDoc(...) "{{{3
+    let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
+    let r = printf('(javadoc %s)', word)
     call rescreen#Send(r, 'clojure')
 endf
 

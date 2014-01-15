@@ -27,5 +27,6 @@ endif
 
 
 nnoremap <buffer> K :call reclojure#Keyword()<cr>
-nnoremap <buffer> <localleader>K :call reclojure#Lookup()<cr>
+nnoremap <buffer> <LocalLeader>J :call reclojure#JavaDoc()<cr>
+nnoremap <buffer> <localLeader>K :call reclojure#Lookup()<cr>
 
