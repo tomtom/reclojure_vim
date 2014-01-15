@@ -40,6 +40,7 @@ endif
 
 
 if !exists('g:reclojure#lookup_url')
+    " If empty, use (find-doc).
     let g:reclojure#lookup_url = 'http://clojuredocs.org/search?q=%s'   "{{{2
 endif
 
@@ -69,9 +70,14 @@ endf
 
 function! reclojure#Lookup(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
-    let url = printf(g:reclojure#lookup_url, word)
-    let cmd = printf(g:reclojure#lookup_cmd, url)
-    " TLogVAR cmd
-    silent exec cmd
+    if empty(g:reclojure#lookup_url)
+        let r = printf('(find-doc #"^%s")', word)
+        call rescreen#Send(r, 'clojure')
+    else
+        let url = printf(g:reclojure#lookup_url, word)
+        let cmd = printf(g:reclojure#lookup_cmd, url)
+        " TLogVAR cmd
+        silent exec cmd
+    endif
 endf
 
