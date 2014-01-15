@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    41
+" @Revision:    45
 
 
 if !exists('g:reclojure#clojure')
@@ -11,6 +11,11 @@ endif
 
 if !exists('g:reclojure#lein_repl')
     let g:reclojure#lein_repl = 'lein repl'   "{{{2
+endif
+
+
+if !exists('g:reclojure#terminal')
+    let g:reclojure#terminal = g:rescreen#terminal   "{{{2
 endif
 
 

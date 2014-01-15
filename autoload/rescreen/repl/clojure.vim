@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    46
+" @Revision:    48
 
 
 let s:prototype = {} "{{{2
@@ -42,6 +42,7 @@ endf
 " The working directory has to be set properly -- either by means of 
 " 'autochdir' or by |:chdir|.
 function! rescreen#repl#clojure#Extend(dict) "{{{3
+    let a:dict.terminal = g:reclojure#terminal
     let a:dict.shell = g:reclojure#shell
     let a:dict.repl_convert_path = g:reclojure#convert_path
     let a:dict.repl_handler = copy(s:prototype)
