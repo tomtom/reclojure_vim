@@ -24,6 +24,12 @@ if !exists('g:reclojure#shell')
 endif
 
 
+if !exists('g:reclojure#automatic_namespace')
+    " If true, automatically switch namespaces when switching buffers.
+    let g:reclojure#automatic_namespace = 1   "{{{2
+endif
+
+
 if !exists('g:reclojure#lookup_cmd')
     if exists('g:netrw_browsex_viewer') && !empty(g:netrw_browsex_viewer)
         let g:reclojure#lookup_cmd = "! ". g:netrw_browsex_viewer ." %s"
@@ -84,5 +90,23 @@ function! reclojure#Lookup(...) "{{{3
         " TLogVAR cmd
         silent exec cmd
     endif
+endf
+
+
+function! reclojure#AutomaticNamespace() "{{{3
+    let view = winsaveview()
+    try
+        1
+        let rx = '^\s*(ns\_s\+\S'
+        if search(rx, 'ceW')
+            let ns = expand('<cword>')
+            if !empty(ns)
+                let r = printf('(in-ns ''%s)', ns)
+                call rescreen#Send(r, 'clojure')
+            endif
+        endif
+    finally
+        call winrestview(view)
+    endtry
 endf
 

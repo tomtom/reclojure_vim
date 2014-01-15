@@ -53,6 +53,8 @@ function! rescreen#repl#clojure#Extend(dict) "{{{3
         let a:dict.repl = g:reclojure#lein_repl
     else
         let a:dict.repl = g:reclojure#clojure
+    if rescreen#Get('reclojure#automatic_namespace')
+        let a:dict.repl_handler.initial_exec = 'call reclojure#AutomaticNamespace() | autocmd ReScreen BufWinEnter,WinEnter * call reclojure#AutomaticNamespace()'
     endif
 endf
 
