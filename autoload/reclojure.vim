@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    51
+" @Revision:    57
 
 
 if !exists('g:reclojure#clojure')
@@ -21,6 +21,11 @@ endif
 
 if !exists('g:reclojure#shell')
     let g:reclojure#shell = g:rescreen#shell   "{{{2
+endif
+
+
+if !exists('g:reclojure#mapleader')
+    let g:reclojure#mapleader = g:rescreen#mapleader   "{{{2
 endif
 
 
@@ -100,6 +105,13 @@ function! reclojure#Lookup(...) "{{{3
 endf
 
 
+function! reclojure#LoadFile(...) "{{{3
+    let filename = a:0 >= 1 && !empty(a:1) ? a:1 : expand("%:p")
+    let r = printf('(load-file "%s")', filename)
+    call rescreen#Send(r, 'clojure')
+endf
+
+
 function! reclojure#AutomaticNamespace() "{{{3
     let view = winsaveview()
     try
@@ -108,7 +120,7 @@ function! reclojure#AutomaticNamespace() "{{{3
         if search(rx, 'ceW')
             let ns = expand('<cword>')
             if !empty(ns)
-                let r = printf('(in-ns ''%s)', ns)
+                let r = printf('(use ''%s)', ns)
                 call rescreen#Send(r, 'clojure')
             endif
         endif
