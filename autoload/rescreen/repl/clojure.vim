@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    48
+" @Revision:    52
 
 
 let s:prototype = {} "{{{2
@@ -42,17 +42,18 @@ endf
 " The working directory has to be set properly -- either by means of 
 " 'autochdir' or by |:chdir|.
 function! rescreen#repl#clojure#Extend(dict) "{{{3
-    let a:dict.terminal = g:reclojure#terminal
-    let a:dict.shell = g:reclojure#shell
-    let a:dict.repl_convert_path = g:reclojure#convert_path
+    let a:dict.terminal = rescreen#Get('reclojure#terminal')
+    let a:dict.shell = rescreen#Get('reclojure#shell')
+    let a:dict.repl_convert_path = rescreen#Get('reclojure#convert_path')
     let a:dict.repl_handler = copy(s:prototype)
     let a:dict.repl_handler.lein_project = findfile('project.clj', '.;')
     " TLogVAR a:dict.lein_project
     if !empty(a:dict.repl_handler.lein_project)
         let a:dict.repldir = fnamemodify(a:dict.repl_handler.lein_project, ':p:h')
-        let a:dict.repl = g:reclojure#lein_repl
+        let a:dict.repl = rescreen#Get('reclojure#lein_repl')
     else
-        let a:dict.repl = g:reclojure#clojure
+        let a:dict.repl = rescreen#Get('reclojure#clojure')
+    endif
     if rescreen#Get('reclojure#automatic_namespace')
         let a:dict.repl_handler.initial_exec = 'call reclojure#AutomaticNamespace() | autocmd ReScreen BufWinEnter,WinEnter * call reclojure#AutomaticNamespace()'
     endif
