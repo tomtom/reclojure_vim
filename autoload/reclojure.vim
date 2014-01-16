@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    57
+" @Revision:    80
 
 
 if !exists('g:reclojure#clojure')
@@ -30,8 +30,9 @@ endif
 
 
 if !exists('g:reclojure#automatic_namespace')
-    " If true, automatically switch namespaces when switching buffers.
-    let g:reclojure#automatic_namespace = 1   "{{{2
+    " If 1, automatically switch namespaces when switching buffers.
+    " If 2, also reload files when saving.
+    let g:reclojure#automatic_namespace = 2   "{{{2
 endif
 
 
@@ -79,14 +80,14 @@ endf
 
 function! reclojure#Keyword(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
-    let r = printf('(doc %s)', word)
+    let r = printf('(clojure.repl/doc %s)', word)
     call rescreen#Send(r, 'clojure')
 endf
 
 
 function! reclojure#JavaDoc(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
-    let r = printf('(javadoc %s)', word)
+    let r = printf('(clojure.java.javadoc/javadoc %s)', word)
     call rescreen#Send(r, 'clojure')
 endf
 
@@ -94,7 +95,7 @@ endf
 function! reclojure#Lookup(...) "{{{3
     let word = a:0 >= 1 && !empty(a:1) ? a:1 : expand("<cword>")
     if empty(g:reclojure#lookup_url)
-        let r = printf('(find-doc #"^%s")', word)
+        let r = printf('(clojure.repl/find-doc #"^%s")', escape(word, '"'))
         call rescreen#Send(r, 'clojure')
     else
         let url = printf(g:reclojure#lookup_url, word)
@@ -107,25 +108,35 @@ endf
 
 function! reclojure#LoadFile(...) "{{{3
     let filename = a:0 >= 1 && !empty(a:1) ? a:1 : expand("%:p")
-    let r = printf('(load-file "%s")', filename)
+    let r = printf('(clojure.core/load-file "%s")', escape(filename, '\"'))
     call rescreen#Send(r, 'clojure')
 endf
 
 
-function! reclojure#AutomaticNamespace() "{{{3
-    let view = winsaveview()
-    try
-        1
-        let rx = '^\s*(ns\_s\+\S'
-        if search(rx, 'ceW')
-            let ns = expand('<cword>')
-            if !empty(ns)
-                let r = printf('(use ''%s)', ns)
-                call rescreen#Send(r, 'clojure')
+function! reclojure#AutomaticNamespace(reload) "{{{3
+    " TLogVAR expand('%')
+    if exists('b:rescreens')
+        let rescreen = b:rescreens.clojure
+        let view = winsaveview()
+        try
+            1
+            let rx = '^\s*(ns\_s\+\S'
+            if search(rx, 'ceW')
+                let ns = expand('<cword>')
+                if empty(ns) || !has_key(rescreen.repl_handler, 'lein_project')
+                    call reclojure#LoadFile()
+                else
+                    " let r = printf('(clojure.core/use ''%s)', ns)
+                    let r = printf('(clojure.core/use ''%s :reload)', ns)
+                    if !a:reload
+                        let r .= printf('(clojure.core/in-ns ''%s) (clojure.core/refer ''clojure.core) (refer ''clojure.repl)', ns)
+                    endif
+                    call rescreen#Send(r, 'clojure')
+                endif
             endif
-        endif
-    finally
-        call winrestview(view)
-    endtry
+        finally
+            call winrestview(view)
+        endtry
+    endif
 endf
 

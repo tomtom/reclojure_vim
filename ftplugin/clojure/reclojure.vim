@@ -1,6 +1,6 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    35
+" @Revision:    37
 
 if exists("b:did_reclojure")
     finish
@@ -17,9 +17,9 @@ command -bar -buffer -nargs=* Leinretest Rescreen! -wait bash lein retest <args>
 command -bar -buffer -nargs=* Leinrerun Rescreen! -wait bash lein run <args>
 command -bar -buffer -nargs=* Leintyped Rescreen! -wait bash lein typed check <args>
 
-command -bar -buffer -nargs=1 Finddoc call rescreen#Send('(finddoc #"<args>")', 'clojure')
-command -bar -buffer -nargs=1 Doc call rescreen#Send('(doc <args>)', 'clojure')
-command -bar -buffer -nargs=1 Javadoc call rescreen#Send('(javadoc "<args>")', 'clojure')
+command -bar -buffer -nargs=1 Finddoc call reclojure#Lookup(<q-args>)
+command -bar -buffer -nargs=1 Doc call reclojure#Keyword(<q-args>)
+command -bar -buffer -nargs=1 Javadoc call reclojure#JavaDoc(<q-args>)
 command -bar -buffer -nargs=? Loadfile call reclojure#LoadFile(empty(<q-args>) ? expand('%:p') : <q-args>)
 
 

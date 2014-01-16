@@ -1,13 +1,13 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    52
+" @Revision:    68
 
 
 let s:prototype = {} "{{{2
 
 
 function! s:prototype.ExitRepl() dict "{{{3
-    if empty(get(self, 'lein_project', ''))
+    if has_key(self, 'lein_project')
         call self.rescreen.EvaluateInSession('(System/exit 0)', '')
     else
         call self.rescreen.EvaluateInSession('(quit)', '')
@@ -46,16 +46,25 @@ function! rescreen#repl#clojure#Extend(dict) "{{{3
     let a:dict.shell = rescreen#Get('reclojure#shell')
     let a:dict.repl_convert_path = rescreen#Get('reclojure#convert_path')
     let a:dict.repl_handler = copy(s:prototype)
-    let a:dict.repl_handler.lein_project = findfile('project.clj', '.;')
+    let lein_project = findfile('project.clj', '.;')
     " TLogVAR a:dict.lein_project
-    if !empty(a:dict.repl_handler.lein_project)
+    if !empty(lein_project) && !empty(rescreen#Get('reclojure#lein_repl'))
+        let a:dict.repl_handler.lein_project = lein_project
         let a:dict.repldir = fnamemodify(a:dict.repl_handler.lein_project, ':p:h')
         let a:dict.repl = rescreen#Get('reclojure#lein_repl')
     else
         let a:dict.repl = rescreen#Get('reclojure#clojure')
     endif
-    if rescreen#Get('reclojure#automatic_namespace')
-        let a:dict.repl_handler.initial_exec = 'call reclojure#AutomaticNamespace() | autocmd ReScreen BufWinEnter,WinEnter * call reclojure#AutomaticNamespace()'
+    let automatic_namespace = rescreen#Get('reclojure#automatic_namespace')
+    if automatic_namespace >= 1
+        let a:dict.repl_handler.initial_exec = [
+                    \ 'call reclojure#AutomaticNamespace(0)',
+                    \ 'autocmd ReScreen BufWinEnter,WinEnter <buffer> call reclojure#AutomaticNamespace(0)',
+                    \ ]
+        if automatic_namespace >= 2
+            call add(a:dict.repl_handler.initial_exec, 
+                        \ 'autocmd ReScreen BufWritePost <buffer> call reclojure#AutomaticNamespace(1)')
+        endif
     endif
 endf
 
