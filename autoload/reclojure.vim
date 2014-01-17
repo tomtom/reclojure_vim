@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    80
+" @Revision:    81
 
 
 if !exists('g:reclojure#clojure')
@@ -73,6 +73,7 @@ function! reclojure#Completions(base) "{{{3
     let completions = rescreen.EvaluateInSession(r, 'r')
     " TLogVAR completions
     let clist = split(completions, ' \+')
+    let clist = sort(clist)
     " TLogVAR clist
     return clist
 endf
