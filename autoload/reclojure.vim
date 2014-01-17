@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    81
+" @Revision:    88
 
 
 if !exists('g:reclojure#clojure')
@@ -114,30 +114,40 @@ function! reclojure#LoadFile(...) "{{{3
 endf
 
 
+let s:ns = ''
+
 function! reclojure#AutomaticNamespace(reload) "{{{3
-    " TLogVAR expand('%')
+    " TLogVAR expand('%'), exists('b:rescreens')
     if exists('b:rescreens')
         let rescreen = b:rescreens.clojure
-        let view = winsaveview()
-        try
-            1
-            let rx = '^\s*(ns\_s\+\S'
-            if search(rx, 'ceW')
-                let ns = expand('<cword>')
-                if empty(ns) || !has_key(rescreen.repl_handler, 'lein_project')
-                    call reclojure#LoadFile()
-                else
-                    " let r = printf('(clojure.core/use ''%s)', ns)
-                    let r = printf('(clojure.core/use ''%s :reload)', ns)
-                    if !a:reload
-                        let r .= printf('(clojure.core/in-ns ''%s) (clojure.core/refer ''clojure.core) (refer ''clojure.repl)', ns)
+        if !rescreen.EnsureSessionExists(1)
+            let view = winsaveview()
+            try
+                1
+                let rx = '^\s*(ns\_s\+\S'
+                if search(rx, 'ceW') > 0
+                    let ns = expand('<cword>')
+                    if empty(ns) || !has_key(rescreen.repl_handler, 'lein_project')
+                        let filename = expand("%:p")
+                        if ns != filename
+                            call reclojure#LoadFile(filename)
+                            let s:ns = filename
+                        endif
+                    elseif s:ns != ns
+                        " let r = printf('(clojure.core/use ''%s)', ns)
+                        let r = printf('(clojure.core/use ''%s :reload)', ns)
+                        if !a:reload
+                            let r .= printf('(clojure.core/in-ns ''%s) (clojure.core/refer ''clojure.core) (refer ''clojure.repl)', ns)
+                        endif
+                        let r = '(do '. r .')'
+                        call rescreen#Send(r, 'clojure')
+                        let s:ns = ns
                     endif
-                    call rescreen#Send(r, 'clojure')
                 endif
-            endif
-        finally
-            call winrestview(view)
-        endtry
+            finally
+                call winrestview(view)
+            endtry
+        endif
     endif
 endf
 

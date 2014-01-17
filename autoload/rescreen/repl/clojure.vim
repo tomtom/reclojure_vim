@@ -1,9 +1,21 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    68
+" @Revision:    73
 
 
 let s:prototype = {} "{{{2
+
+
+function! s:prototype.InitBuffer() dict "{{{3
+    let automatic_namespace = rescreen#Get('reclojure#automatic_namespace')
+    if automatic_namespace >= 1
+        let self.initial_exec = 'call reclojure#AutomaticNamespace(0)'
+        autocmd ReScreen BufRead,BufWinEnter,WinEnter <buffer> call reclojure#AutomaticNamespace(0)
+        if automatic_namespace >= 2
+            autocmd ReScreen BufWritePost <buffer> call reclojure#AutomaticNamespace(1)
+        endif
+    endif
+endf
 
 
 function! s:prototype.ExitRepl() dict "{{{3
@@ -54,17 +66,6 @@ function! rescreen#repl#clojure#Extend(dict) "{{{3
         let a:dict.repl = rescreen#Get('reclojure#lein_repl')
     else
         let a:dict.repl = rescreen#Get('reclojure#clojure')
-    endif
-    let automatic_namespace = rescreen#Get('reclojure#automatic_namespace')
-    if automatic_namespace >= 1
-        let a:dict.repl_handler.initial_exec = [
-                    \ 'call reclojure#AutomaticNamespace(0)',
-                    \ 'autocmd ReScreen BufWinEnter,WinEnter <buffer> call reclojure#AutomaticNamespace(0)',
-                    \ ]
-        if automatic_namespace >= 2
-            call add(a:dict.repl_handler.initial_exec, 
-                        \ 'autocmd ReScreen BufWritePost <buffer> call reclojure#AutomaticNamespace(1)')
-        endif
     endif
 endf
 
