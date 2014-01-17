@@ -1,7 +1,7 @@
 " reclojure.vim
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Revision:    88
+" @Revision:    94
 
 
 if !exists('g:reclojure#clojure')
@@ -35,6 +35,20 @@ if !exists('g:reclojure#automatic_namespace')
     let g:reclojure#automatic_namespace = 2   "{{{2
 endif
 
+
+if !exists('g:reclojure#reload')
+    " How files are reloaded when |g:reclojure#automatic_namespace| is 
+    " 2. Possible values:
+    "
+    "   use ... Reload the file via clojure.core/use
+    "   refresh ... Reload via 
+    "       https://github.com/clojure/tools.namespace (must be a lein 
+    "       dep)
+    "
+    " Any other variable will be used as format string that takes the 
+    " namespace as its %s argument.
+    let g:reclojure#reload = 'use'   "{{{2
+endif
 
 if !exists('g:reclojure#lookup_cmd')
     if exists('g:netrw_browsex_viewer') && !empty(g:netrw_browsex_viewer)
@@ -135,7 +149,17 @@ function! reclojure#AutomaticNamespace(reload) "{{{3
                         endif
                     elseif s:ns != ns
                         " let r = printf('(clojure.core/use ''%s)', ns)
-                        let r = printf('(clojure.core/use ''%s :reload)', ns)
+                        if g:reclojure#reload == 'use'
+                            let r = printf('(clojure.core/use ''%s :reload)', ns)
+                        elseif g:reclojure#reload == 'refresh'
+                            let r = '(clojure.tools.namespace.repl/refresh)'
+                        elseif !empty(g:reclojure#reload)
+                            if g:reclojure#reload =~ '%s'
+                                let r = printf(g:reclojure#reload, ns)
+                            else
+                                let r = g:reclojure#reload
+                            endif
+                        endif
                         if !a:reload
                             let r .= printf('(clojure.core/in-ns ''%s) (clojure.core/refer ''clojure.core) (refer ''clojure.repl)', ns)
                         endif
